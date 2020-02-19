@@ -1,34 +1,34 @@
 --------------------------------------------------------------------------------
 Section 0 - Line up
 --------------------------------------------------------------------------------
-Player 0 (P0): E0, Collude
-        Always collude.
-Player 1 (P1): E1, Betray
-        Always betray.
-Player 2 (P2): E2, Alternate
-        Collude, then alternate.
-Player 3 (P3): E3, Collude but retaliate
-        Collude first round. Collude, except in a round after getting 
-        a severe punishment.
+Player 0 (P0): Team 7, Copy
+        Always copy the previous output of the opponent.
+Player 1 (P1): Team 7, My Betrayal
+        So long as this players history is less than their opponents, they will 
+        always betray.
+Player 2 (P2): Team 7, Opposite
+        Always do the opposite of the previous output of the opponent.
+Player 3 (P3): Team 7, Random
+        Randomly picks between c or b
 --------------------------------------------------------------------------------
 Section 1 - Player vs. Player
 --------------------------------------------------------------------------------
 Each column shows pts//round earned against each other player:
              P0     P1     P2     P3
-vs. P0 :      0    100     49      0
-vs. P1 :   -500      0   -376   -376
-vs. P2 :   -249    -74      0   -199
-vs. P3 :      0    -74   -199      0
-TOTAL  :   -749    -48   -526   -575
+vs. P0 :      0   -249   -161   -248
+vs. P1 :   -252      0   -500   -250
+vs. P2 :   -164    100      0    100
+vs. P3 :   -252   -250   -500      0
+TOTAL  :   -668   -399  -1161   -398
 --------------------------------------------------------------------------------
 Section 2 - Leaderboard
 --------------------------------------------------------------------------------
 Average points per round:
 Team name (P#):  Score      with strategy name
-E1        (P1):        -12 points with Betray                                  
-E2        (P2):       -132 points with Alternate                               
-E3        (P3):       -144 points with Collude but retaliate                   
-E0        (P0):       -188 points with Collude                                 
+Team 7    (P1):       -100 points with My Betrayal                             
+Team 7    (P3):       -100 points with Random                                  
+Team 7    (P0):       -167 points with Copy                                    
+Team 7    (P2):       -291 points with Opposite                                
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 example0--------------------------------------------------------------------------------
@@ -40,94 +40,9 @@ example0------------------------------------------------------------------------
 #     move: A function that returns 'c' or 'b'
 ####
 
-team_name = 'E0'
-strategy_name = 'Collude'
-strategy_description = 'Always collude.'
-    
-def move(my_history, their_history, my_score, their_score):
-    '''Make my move based on the history with this player.
-    
-    history: a string with one letter (c or b) per round that has been played with this opponent.
-    their_history: a string of the same length as history, possibly empty. 
-    The first round between these two players is my_history[0] and their_history[0]
-    The most recent round is my_history[-1] and their_history[-1]
-    
-    Returns 'c' or 'b' for collude or betray.
-    '''
-    
-    # This player always colludes.
-    return 'c'
-    --------------------------------------------------------------------------------
-example1--------------------------------------------------------------------------------
-####
-# Each team's file must define four tokens:
-#     team_name: a string
-#     strategy_name: a string
-#     strategy_description: a string
-#     move: A function that returns 'c' or 'b'
-####
-
-team_name = 'E1'
-strategy_name = 'Betray'
-strategy_description = 'Always betray.'
-    
-def move(my_history, their_history, my_score, their_score):
-    '''Make my move based on the history with this player.
-    
-    history: a string with one letter (c or b) per round that has been played with this opponent.
-    their_history: a string of the same length as history, possibly empty. 
-    The first round between these two players is my_history[0] and their_history[0]
-    The most recent round is my_history[-1] and their_history[-1]
-    
-    Returns 'c' or 'b' for collude or betray.
-    '''
-    
-    #This example player always betrays.      
-    return 'b'
---------------------------------------------------------------------------------
-example2--------------------------------------------------------------------------------
-####
-# Each team's file must define four tokens:
-#     team_name: a string
-#     strategy_name: a string
-#     strategy_description: a string
-#     move: A function that returns 'c' or 'b'
-####
-
-team_name = 'E2'
-strategy_name = 'Alternate'
-strategy_description = 'Collude, then alternate.'
-    
-def move(my_history, their_history, my_score, their_score):
-    '''Make my move based on the history with this player.
-    
-    history: a string with one letter (c or b) per round that has been played with this opponent.
-    their_history: a string of the same length as history, possibly empty. 
-    The first round between these two players is my_history[0] and their_history[0]
-    The most recent round is my_history[-1] and their_history[-1]
-    
-    Returns 'c' or 'b' for collude or betray.
-    '''
-    # This player colludes on even numbered rounds (first round is round #0).
-    if len(my_history)%2 == 0:
-        return 'c'
-    else:
-        return 'b'
-    --------------------------------------------------------------------------------
-example3--------------------------------------------------------------------------------
-####
-# Each team's file must define four tokens:
-#     team_name: a string
-#     strategy_name: a string
-#     strategy_description: a string
-#     move: A function that returns 'c' or 'b'
-####
-
-team_name = 'E3'
-strategy_name = 'Collude but retaliate'
-strategy_description = '''\
-Collude first round. Collude, except in a round after getting 
-a severe punishment.'''
+team_name = 'Team 7'
+strategy_name = 'Copy'
+strategy_description = 'Always copy the previous output of the opponent.'
     
 def move(my_history, their_history, my_score, their_score):
     '''Make my move based on the history with this player.
@@ -141,138 +56,241 @@ def move(my_history, their_history, my_score, their_score):
     '''
     if len(my_history)==0: # It's the first round; collude.
         return 'c'
-    elif my_history[-1]=='c' and their_history[-1]=='b':
-        return 'b' # Betray if they were severely punished last time,
+    elif their_history[-1]=='b':#checks if the opponent betrayed in the previous round
+        return 'b' #copies the opponent and puts a betrayal for the next round 
     else:
-        return 'c' # otherwise collude.--------------------------------------------------------------------------------
-Section 3 - Game Data for Team E0
+        return 'c' # otherwise collude.
+    --------------------------------------------------------------------------------
+example1--------------------------------------------------------------------------------
+####
+# Each team's file must define four tokens:
+#     team_name: a string
+#     strategy_name: a string
+#     strategy_description: a string
+#     move: A function that returns 'c' or 'b'
+####
+
+team_name = 'Team 7'
+strategy_name = 'My Betrayal'
+strategy_description = 'So long as this players history is less than their opponents, they will always betray.'
+    
+def move(my_history, their_history, my_score, their_score):
+    '''Make my move based on the history with this player.
+    
+    history: a string with one letter (c or b) per round that has been played with this opponent.
+    their_history: a string of the same length as history, possibly empty. 
+    The first round between these two players is my_history[0] and their_history[0]
+    The most recent round is my_history[-1] and their_history[-1]
+    
+    Returns 'c' or 'b' for collude or betray.
+    '''
+    
+    #This example player always betrays.      
+
+
+    if my_history <= their_history:
+      return 'b'
 --------------------------------------------------------------------------------
--500 pt//round: E0(P0) "Collude"
-100 pt//ound: E1(P1) "Betray"
+example2--------------------------------------------------------------------------------
+####
+# Each team's file must define four tokens:
+#     team_name: a string
+#     strategy_name: a string
+#     strategy_description: a string
+#     move: A function that returns 'c' or 'b'
+####
+
+team_name = 'Team 7'
+strategy_name = 'Opposite'
+strategy_description = 'Always do the opposite of the previous output of the opponent.'
+    
+def move(my_history, their_history, my_score, their_score):
+    '''Make my move based on the history with this player.
+    
+    history: a string with one letter (c or b) per round that has been played with this opponent.
+    their_history: a string of the same length as history, possibly empty. 
+    The first round between these two players is my_history[0] and their_history[0]
+    The most recent round is my_history[-1] and their_history[-1]
+    
+    Returns 'c' or 'b' for collude or betray.
+    '''
+    # This player colludes on even numbered rounds (first round is round #0).
+    if len(my_history)==0: # It's the first round; collude.
+        return 'c'
+    elif their_history[-1]=='b':#checks if the opponent betrayed in the previous round
+        return 'c' #does the opposite of the opponent and puts a collude for the next round 
+    else:
+        return 'b' # otherwise betray.
+    --------------------------------------------------------------------------------
+example3--------------------------------------------------------------------------------
+####
+# Each team's file must define four tokens:
+#     team_name: a string
+#     strategy_name: a string
+#     strategy_description: a string
+#     move: A function that returns 'c' or 'b'
+####
+import random 
+
+team_name = 'Team 7'
+strategy_name = 'Random'
+strategy_description = 'Randomly picks between c or b'
+    
+def move(my_history, their_history, my_score, their_score):
+    '''Make my move based on the history with this player.
+    
+    history: a string with one letter (c or b) per round that has been played with this opponent.
+    their_history: a string of the same length as history, possibly empty. 
+    The first round between these two players is my_history[0] and their_history[0]
+    The most recent round is my_history[-1] and their_history[-1]
+    
+    Returns 'c' or 'b' for collude or betray.
+    '''
+    x = [random.choice([0,1])]
+    if x == 0: 
+      return 'c'
+    else: 
+      return 'b'--------------------------------------------------------------------------------
+Section 3 - Game Data for Team Team 7
+--------------------------------------------------------------------------------
+-252 pt//round: Team 7(P0) "Copy"
+-249 pt//ound: Team 7(P1) "My Betrayal"
+cbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+Bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+--------------------------------------------------------------------------------
+-164 pt//round: Team 7(P0) "Copy"
+-161 pt//ound: Team 7(P2) "Opposite"
+CcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbB
+CBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbc
+
+CcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbB
+CBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbc
+
+CcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCc
+CBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCB
+
+--------------------------------------------------------------------------------
+-252 pt//round: Team 7(P0) "Copy"
+-248 pt//ound: Team 7(P3) "Random"
+cbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+Bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+bbbbbbbbbb
+bbbbbbbbbb
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+Section 3 - Game Data for Team Team 7
+--------------------------------------------------------------------------------
+-249 pt//round: Team 7(P1) "My Betrayal"
+-252 pt//ound: Team 7(P0) "Copy"
+Bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+cbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+--------------------------------------------------------------------------------
+100 pt//round: Team 7(P1) "My Betrayal"
+-500 pt//ound: Team 7(P2) "Opposite"
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+
+BBBBB
+ccccc
+
+--------------------------------------------------------------------------------
+-250 pt//round: Team 7(P1) "My Betrayal"
+-250 pt//ound: Team 7(P3) "Random"
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+Section 3 - Game Data for Team Team 7
+--------------------------------------------------------------------------------
+-161 pt//round: Team 7(P2) "Opposite"
+-164 pt//ound: Team 7(P0) "Copy"
+CBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbc
+CcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbB
+
+CBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbc
+CcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbB
+
+CBbcCBbcCBbcCBbcCBbcCBbcCBbcCBbcCB
+CcbBCcbBCcbBCcbBCcbBCcbBCcbBCcbBCc
+
+--------------------------------------------------------------------------------
+-500 pt//round: Team 7(P2) "Opposite"
+100 pt//ound: Team 7(P1) "My Betrayal"
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 
-cccccccccccccccccccccccccccccc
-BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+ccccc
+BBBBB
 
 --------------------------------------------------------------------------------
--249 pt//round: E0(P0) "Collude"
-49 pt//ound: E2(P2) "Alternate"
-CcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCc
-CBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCB
+-500 pt//round: Team 7(P2) "Opposite"
+100 pt//ound: Team 7(P3) "Random"
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 
-CcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcC
-CBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBC
-
---------------------------------------------------------------------------------
-0 pt//round: E0(P0) "Collude"
-0 pt//ound: E3(P3) "Collude but retaliate"
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+ccccccccccccccccccccccccccccccccccccccccccc
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-Section 3 - Game Data for Team E1
+Section 3 - Game Data for Team Team 7
 --------------------------------------------------------------------------------
-100 pt//round: E1(P1) "Betray"
--500 pt//ound: E0(P0) "Collude"
+-248 pt//round: Team 7(P3) "Random"
+-252 pt//ound: Team 7(P0) "Copy"
+Bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+cbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+bbbbbbbbbb
+bbbbbbbbbb
+
+--------------------------------------------------------------------------------
+-250 pt//round: Team 7(P3) "Random"
+-250 pt//ound: Team 7(P1) "My Betrayal"
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+--------------------------------------------------------------------------------
+100 pt//round: Team 7(P3) "Random"
+-500 pt//ound: Team 7(P2) "Opposite"
 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-
-BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-cccccccccccccccccccccccccccccc
-
---------------------------------------------------------------------------------
--74 pt//round: E1(P1) "Betray"
--376 pt//ound: E2(P2) "Alternate"
-BbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBb
-cbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcb
-
-BbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBb
-cbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcb
-
-BbBbBbBbBbB
-cbcbcbcbcbc
-
---------------------------------------------------------------------------------
--74 pt//round: E1(P1) "Betray"
--376 pt//ound: E3(P3) "Collude but retaliate"
-BbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBb
-cbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcb
-
-BbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbB
-cbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbc
-
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------
-Section 3 - Game Data for Team E2
---------------------------------------------------------------------------------
-49 pt//round: E2(P2) "Alternate"
--249 pt//ound: E0(P0) "Collude"
-CBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCB
-CcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCc
-
-CBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBC
-CcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcCcC
-
---------------------------------------------------------------------------------
--376 pt//round: E2(P2) "Alternate"
--74 pt//ound: E1(P1) "Betray"
-cbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcb
-BbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBb
-
-cbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcb
-BbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBb
-
-cbcbcbcbcbc
-BbBbBbBbBbB
-
---------------------------------------------------------------------------------
--199 pt//round: E2(P2) "Alternate"
--199 pt//ound: E3(P3) "Collude but retaliate"
-CBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcB
-CcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBc
-
-cBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBc
-BcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcB
-
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------
-Section 3 - Game Data for Team E3
---------------------------------------------------------------------------------
-0 pt//round: E3(P3) "Collude but retaliate"
-0 pt//ound: E0(P0) "Collude"
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-
---------------------------------------------------------------------------------
--376 pt//round: E3(P3) "Collude but retaliate"
--74 pt//ound: E1(P1) "Betray"
-cbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcb
-BbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBb
-
-cbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbc
-BbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbBbB
-
---------------------------------------------------------------------------------
--199 pt//round: E3(P3) "Collude but retaliate"
--199 pt//ound: E2(P2) "Alternate"
-CcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBc
-CBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcB
-
-BcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcB
-cBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBcBc
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+ccccccccccccccccccccccccccccccccccccccccccc
 
 --------------------------------------------------------------------------------

@@ -6,9 +6,9 @@
 #     move: A function that returns 'c' or 'b'
 ####
 
-team_name = 'E1'
-strategy_name = 'Betray'
-strategy_description = 'Always betray.'
+team_name = 'Team 7'
+strategy_name = 'My Betrayal'
+strategy_description = 'So long as this players history is less than their opponents, they will always betray.'
     
 def move(my_history, their_history, my_score, their_score):
     '''Make my move based on the history with this player.
@@ -22,4 +22,7 @@ def move(my_history, their_history, my_score, their_score):
     '''
     
     #This example player always betrays.      
-    return 'b'
+
+
+    if my_history <= their_history:
+      return 'b'
